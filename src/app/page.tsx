@@ -1,15 +1,27 @@
-
 "use client"
+
+import uploadFile from "../../requests/api-requests";
+
 export default function Home() {
   const uploadFileContent = async (content: any) => {
-    //const response = await uploadFile(content);
+    const response = await uploadFile(content);
+    console.log(response);
   }
 
   const handleUploadFIle = (e: any) => {
     e.preventDefault();
-    uploadFileContent(e);
+
+    const fileInput = document.getElementById('fileConverInput') as HTMLInputElement;
+    const selectedFile = fileInput?.['files']?.[0];
+    
+    if (!selectedFile) {
+      alert('Please select a file.');
+      return;
+    }else{
+      uploadFileContent(selectedFile);
+    }
   }
-  
+
   return (
     <div className=" flex items-center justify-center min-h-screen">
       <div className="w-4/12 h-screen px-14 flex flex-col items-center justify-center border-4 border-[#ffffff] rounded-xl  bg-red-700">
