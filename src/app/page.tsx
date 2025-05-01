@@ -3,11 +3,12 @@ import { motion } from 'framer-motion';
 import { FileProps } from "../../interfacesList/interfaces-list";
 import { uploadFile } from "../../requests/api-requests";
 import { useModal } from "../../stores/modal-store";
+import { FormEvent } from 'react';
 
 export default function Home() {
   const { modalStatus, setModalStatus } = useModal();
 
-  const uploadFileContent = async (content: any) => {
+  const uploadFileContent = async (content: File) => {
     const urlFile: FileProps | undefined = await uploadFile(content);
 
     if (!urlFile) return;
@@ -18,7 +19,7 @@ export default function Home() {
     elementAtoDownload.click();
   }
 
-  const handleUploadFIle = (e: any) => {
+  const handleUploadFIle = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const fileInput = document.getElementById('fileConverInput') as HTMLInputElement;
@@ -28,9 +29,7 @@ export default function Home() {
       alert('Please select a file.');
       return;
     } else {
-console.log(selectedFile)
       uploadFileContent(selectedFile);
-
       setModalStatus(true);
     }
   }
@@ -81,7 +80,7 @@ console.log(selectedFile)
         {modalStatus && (
           <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
             <div className="w-3/12 h-1/6 bg-white rounded-xl flex flex-col items-center justify-center gap-4">
-              <h1 className="text-lg">Carregando</h1>
+              <h1 className="text-lg">Loading</h1>
               {
                 loadingSpinner()
               }
