@@ -22,13 +22,13 @@ export default function Home() {
     e.preventDefault();
 
     const fileInput = document.getElementById('fileConverInput') as HTMLInputElement;
-    const selectedFile = fileInput?.['files']?.[0];
+    const selectedFile: File | undefined = fileInput?.['files']?.[0];
 
     if (!selectedFile) {
       alert('Please select a file.');
       return;
     } else {
-
+console.log(selectedFile)
       uploadFileContent(selectedFile);
 
       setModalStatus(true);
@@ -68,7 +68,6 @@ export default function Home() {
                 name="fileConvert"
                 accept=".docx"
                 required
-                placeholder="Choose a file"
               />
               <button
                 type="submit"

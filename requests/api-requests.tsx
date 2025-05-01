@@ -1,7 +1,7 @@
 import { apiKey, } from "../lib/config";
 import ConvertApi from 'convertapi-js'
 
-export async function uploadFile(fileContent: any) {
+export async function uploadFile(fileContent: File) {
     if (!apiKey) return;
 
     try {
