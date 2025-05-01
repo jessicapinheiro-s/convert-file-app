@@ -1,11 +1,21 @@
 "use client"
-
-import uploadFile from "../../requests/api-requests";
+import { motion } from 'framer-motion';
+import { FileProps } from "../../interfacesList/interfaces-list";
+import { uploadFile } from "../../requests/api-requests";
+import { useModal } from "../../stores/modal-store";
 
 export default function Home() {
+  const { modalStatus, setModalStatus } = useModal();
+
   const uploadFileContent = async (content: any) => {
-    const response = await uploadFile(content);
-    console.log(response);
+    const urlFile: FileProps | undefined = await uploadFile(content);
+
+    if (!urlFile) return;
+    setModalStatus(false);
+    const elementAtoDownload = document.createElement('a');
+    elementAtoDownload.href = urlFile.url;
+    elementAtoDownload.download = urlFile.name;
+    elementAtoDownload.click();
   }
 
   const handleUploadFIle = (e: any) => {
@@ -13,13 +23,26 @@ export default function Home() {
 
     const fileInput = document.getElementById('fileConverInput') as HTMLInputElement;
     const selectedFile = fileInput?.['files']?.[0];
-    
+
     if (!selectedFile) {
       alert('Please select a file.');
       return;
-    }else{
+    } else {
+
       uploadFileContent(selectedFile);
+
+      setModalStatus(true);
     }
+  }
+
+  const loadingSpinner = () => {
+    return (
+      <motion.div
+        className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      />
+    );
   }
 
   return (
@@ -31,7 +54,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-8/12 h-screen px-14">
+      <div className="w-8/12 h-screen px-14" id="mom">
         <div className="w-full h-screen flex flex-col items-center justify-center bg-white  rounded-b-xl">
           <form id="uploadFile" onSubmit={(event) => handleUploadFIle(event)} className="w-full flex flex-col items-center">
             <div className="font-bold text-[29px]  text-center">
@@ -56,6 +79,16 @@ export default function Home() {
             </div>
           </form>
         </div>
+        {modalStatus && (
+          <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
+            <div className="w-3/12 h-1/6 bg-white rounded-xl flex flex-col items-center justify-center gap-4">
+              <h1 className="text-lg">Carregando</h1>
+              {
+                loadingSpinner()
+              }
+            </div>
+          </div>
+        )}
       </div>
 
 
